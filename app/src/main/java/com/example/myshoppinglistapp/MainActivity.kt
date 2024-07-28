@@ -7,16 +7,25 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.example.myshoppinglistapp.ui.theme.MyShoppingListAppTheme
 
 class MainActivity : ComponentActivity() {
@@ -29,8 +38,9 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
+                    var sItems by remember { mutableStateOf(listOf<ShoppingItem>()) }
                     Column(
-                        modifier = Modifier.fillMaxSize(),
+                        modifier = Modifier.fillMaxSize().statusBarsPadding().navigationBarsPadding(),
                         verticalArrangement = Arrangement.Center
                     ) {
                         Button(
@@ -39,6 +49,19 @@ class MainActivity : ComponentActivity() {
                         ) {
                             Text("Add Item")
                         }
+                        LazyColumn(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(16.dp)
+                        ) {
+                            items(sItems) { item ->
+                                ShoppingItem(
+                                    id = item.id,
+                                    name = item.name,
+                                    quantity = item.quantity
+                                )
+                            }
+                        }
                     }
                 }
             }
@@ -46,18 +69,9 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    MyShoppingListAppTheme {
-        Greeting("Android")
-    }
-}
+data class ShoppingItem(
+    val id: Int,
+    var name: String,
+    var quantity: String,
+    var isEditing: Boolean = false
+)
